@@ -1,15 +1,15 @@
 #ifndef MY_NEW_PROJECT_NODE_H
 #define MY_NEW_PROJECT_NODE_H
-#progma once
+#pragma once
 #include <memory>
 
 template <typename T>
 struct Node {
     T data;
     std::shared_ptr<Node<T>> next;
-    std::shared_ptr<Node<T>> prev;
+    std::weak_ptr<Node<T>> prev;
 
-    Node(T value) : data(value), next(nullptr), prev(nullptr) {}
+    Node(T value) : data(value), next(nullptr) {}
 };
 
 #endif //MY_NEW_PROJECT_NODE_H

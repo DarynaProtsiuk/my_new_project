@@ -32,6 +32,7 @@ public:
             head->prev = newNode;
             head = newNode;
         }
+
         size++;
     }
 
@@ -42,9 +43,10 @@ public:
             head = tail = newNode;
         } else {
             tail->next = newNode;
-            newNode->prev = tail;
+            newNode->prev = tail; // OK (weak_ptr приймає shared_ptr)
             tail = newNode;
         }
+
         size++;
     }
 
@@ -53,8 +55,11 @@ public:
             throw std::out_of_range("List is empty");
 
         head = head->next;
-        if (head) head->prev = nullptr;
-        else tail = nullptr;
+
+        if (head)
+            head->prev.reset(); // очищає weak_ptr
+        else
+            tail = nullptr;
 
         size--;
     }
@@ -63,9 +68,12 @@ public:
         if (isEmpty())
             throw std::out_of_range("List is empty");
 
-        tail = tail->prev;
-        if (tail) tail->next = nullptr;
-        else head = nullptr;
+        tail = tail->prev.lock();  // 🔥 важливо
+
+        if (tail)
+            tail->next = nullptr;
+        else
+            head = nullptr;
 
         size--;
     }
